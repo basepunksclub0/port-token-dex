@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Port Token DEX - Complete DApp</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-brand">
+                <i class="fas fa-anchor"></i>
+                <span>Port Token DEX</span>
+            </div>
+            <ul class="nav-menu">
+                <li><a href="#" class="nav-link active" data-section="home">Home</a></li>
+                <li><a href="#" class="nav-link" data-section="trade">Trade</a></li>
+                <li><a href="#" class="nav-link" data-section="liquidity">Liquidity</a></li>
+                <li><a href="#" class="nav-link" data-section="analytics">Analytics</a></li>
+                <li><a href="#" class="nav-link" data-section="portfolio">Portfolio</a></li>
+            </ul>
+            <div class="nav-right">
+                <div class="network-indicator">
+                    <div class="network-dot"></div>
+                    <span>Live Network</span>
+                </div>
+                <button class="wallet-btn" id="connectWallet">
+                    <i class="fas fa-wallet"></i>
+                    <span id="walletText">Connect Wallet</span>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Connection Status -->
+    <div class="status-bar">
+        <div class="status-item">
+            <i class="fas fa-circle status-online"></i>
+            <span>Server Connected</span>
+        </div>
+        <div class="status-item">
+            <i class="fas fa-exchange-alt"></i>
+            <span id="lastUpdate">Real-time Updates</span>
+        </div>
+        <div class="status-item">
+            <i class="fas fa-users"></i>
+            <span id="activeUsers">1 Active User</span>
+        </div>
+    </div>
+
+    <!-- Home Section -->
+    <section id="home" class="section active">
+        <div class="container">
+            <div class="hero">
+                <h1>Port Token DEX</h1>
+                <p>Trade port-based tokens with real-world performance data and live price feeds</p>
+                <div class="hero-stats">
+                    <div class="hero-stat">
+                        <span class="stat-value" id="totalVolume">$8.5M</span>
+                        <span class="stat-label">24h Volume</span>
+                    </div>
+                    <div class="hero-stat">
+                        <span class="stat-value" id="totalLiquidity">$12.3M</span>
+                        <span class="stat-label">Total Liquidity</span>
+                    </div>
+                    <div class="hero-stat">
+                        <span class="stat-value" id="activePairs">5</span>
+                        <span class="stat-label">Active Tokens</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="token-grid" id="tokenGrid">
+                <!-- Tokens will be loaded dynamically -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Trade Section -->
+    <section id="trade" class="section">
+        <div class="container">
+            <h2>Token Swap</h2>
+            <div class="trade-container">
+                <div class="swap-card">
+                    <div class="swap-header">
+                        <h3>Swap Tokens</h3>
+                        <div class="slippage-settings">
+                            <i class="fas fa-cog"></i>
+                            <span>0.5% slippage</span>
+                        </div>
+                    </div>
+                    
+                    <div class="swap-input">
+                        <label>From</label>
+                        <div class="input-group">
+                            <input type="number" id="fromAmount" placeholder="0.0" step="0.01">
+                            <select id="fromToken">
+                                <option value="ETH">ETH</option>
+                            </select>
+                        </div>
+                        <div class="balance-info">
+                            Balance: <span id="fromBalance">0.00</span>
+                        </div>
+                    </div>
+                    
+                    <div class="swap-arrow" onclick="swapTokens()">
+                        <i class="fas fa-exchange-alt"></i>
+                    </div>
+                    
+                    <div class="swap-input">
+                        <label>To</label>
+                        <div class="input-group">
+                            <input type="number" id="toAmount" placeholder="0.0" readonly>
+                            <select id="toToken">
+                                <option value="pSINGAPORE">pSINGAPORE</option>
+                            </select>
+                        </div>
+                        <div class="balance-info">
+                            Balance: <span id="toBalance">0.00</span>
+                        </div>
+                    </div>
+                    
+                    <div class="swap-info">
+                        <div class="info-row">
+                            <span>Rate</span>
+                            <span id="exchangeRate">1 ETH = 800 pSINGAPORE</span>
+                        </div>
+                        <div class="info-row">
+                            <span>Price Impact</span>
+                            <span id="priceImpact">< 0.1%</span>
+                        </div>
+                        <div class="info-row">
+                            <span>Fee</span>
+                            <span>0.3%</span>
+                        </div>
+                        <div class="info-row">
+                            <span>Minimum Received</span>
+                            <span id="minReceived">0.00</span>
+                        </div>
+                    </div>
+                    
+                    <button class="swap-btn" id="swapBtn" onclick="executeSwap()">
+                        <i class="fas fa-exchange-alt"></i>
+                        <span>Connect Wallet to Trade</span>
+                    </button>
+                </div>
+                
+                <div class="trade-info">
+                    <h3>Recent Trades</h3>
+                    <div class="recent-trades" id="recentTrades">
+                        <!-- Recent trades will be loaded here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Liquidity Section -->
+    <section id="liquidity" class="section">
+        <div class="container">
+            <h2>Liquidity Pools</h2>
+            <div class="liquidity-container">
+                <div class="liquidity-actions">
+                    <div class="pool-card">
+                        <h3>Add Liquidity</h3>
+                        <div class="liquidity-inputs">
+                            <div class="liquidity-input">
+                                <label>Token A</label>
+                                <div class="input-group">
+                                    <input type="number" id="liquidityAmountA" placeholder="0.0" step="0.01">
+                                    <select id="liquidityTokenA">
+                                        <!-- Options loaded dynamically -->
+                                    </select>
+                                </div>
+                                <div class="balance-info">
+                                    Balance: <span id="liquidityBalanceA">0.00</span>
+                                </div>
+                            </div>
+                            <div class="plus-icon">
+                                <i class="fas fa-plus"></i>
+                            </div>
+                            <div class="liquidity-input">
+                                <label>Token B</label>
+                                <div class="input-group">
+                                    <input type="number" id="liquidityAmountB" placeholder="0.0" step="0.01">
+                                    <select id="liquidityTokenB">
+                                        <!-- Options loaded dynamically -->
+                                    </select>
+                                </div>
+                                <div class="balance-info">
+                                    Balance: <span id="liquidityBalanceB">0.00</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="pool-info">
+                            <div class="info-row">
+                                <span>Pool Share</span>
+                                <span id="poolShare">0%</span>
+                            </div>
+                            <div class="info-row">
+                                <span>Est. APY</span>
+                                <span id="estimatedAPY">12.5%</span>
+                            </div>
+                        </div>
+                        <button class="liquidity-btn" id="addLiquidityBtn" onclick="addLiquidity()">
+                            Add Liquidity
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="pools-overview">
+                    <h3>Available Pools</h3>
+                    <div class="pools-list" id="poolsList">
+                        <!-- Pools loaded dynamically -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Analytics Section -->
+    <section id="analytics" class="section">
+        <div class="container">
+            <h2>Analytics Dashboard</h2>
+            <div class="analytics-container">
+                <div class="chart-section">
+                    <div class="chart-card">
+                        <div class="chart-header">
+                            <h3>Price Chart</h3>
+                            <div class="chart-controls">
+                                <select id="chartToken">
+                                    <!-- Options loaded dynamically -->
+                                </select>
+                                <div class="timeframe-buttons">
+                                    <button class="timeframe-btn active" data-timeframe="24h">24H</button>
+                                    <button class="timeframe-btn" data-timeframe="7d">7D</button>
+                                    <button class="timeframe-btn" data-timeframe="30d">30D</button>
+                                </div>
+                            </div>
+                        </div>
+                        <canvas id="priceChart" width="400" height="200"></canvas>
+                    </div>
+                    
+                    <div class="chart-card">
+                        <h3>Volume Chart</h3>
+                        <canvas id="volumeChart" width="400" height="200"></canvas>
+                    </div>
+                </div>
+                
+                <div class="stats-section">
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-icon">
+                                <i class="fas fa-chart-line"></i>
+                            </div>
+                            <div class="stat-content">
+                                <h4>Total Volume (24h)</h4>
+                                <span class="stat-value" id="analyticsVolume">$8.5M</span>
+                                <span class="stat-change positive">+12.5%</span>
+                            </div>
+                        </div>
+                        
+                        <div class="stat-card">
+                            <div class="stat-icon">
+                                <i class="fas fa-water"></i>
+                            </div>
+                            <div class="stat-content">
+                                <h4>Total Liquidity</h4>
+                                <span class="stat-value" id="analyticsLiquidity">$12.3M</span>
+                                <span class="stat-change positive">+5.2%</span>
+                            </div>
+                        </div>
+                        
+                        <div class="stat-card">
+                            <div class="stat-icon">
+                                <i class="fas fa-exchange-alt"></i>
+                            </div>
+                            <div class="stat-content">
+                                <h4>Trades (24h)</h4>
+                                <span class="stat-value" id="analyticsTrades">1,247</span>
+                                <span class="stat-change positive">+8.3%</span>
+                            </div>
+                        </div>
+                        
+                        <div class="stat-card">
+                            <div class="stat-icon">
+                                <i class="fas fa-coins"></i>
+                            </div>
+                            <div class="stat-content">
+                                <h4>Active Pairs</h4>
+                                <span class="stat-value" id="analyticsTokens">5</span>
+                                <span class="stat-change neutral">0%</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="top-tokens">
+                        <h3>Top Performing Tokens</h3>
+                        <div class="token-performance" id="topTokens">
+                            <!-- Top tokens loaded dynamically -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Portfolio Section -->
+    <section id="portfolio" class="section">
+        <div class="container">
+            <h2>Your Portfolio</h2>
+            <div class="portfolio-container">
+                <div class="portfolio-summary">
+                    <div class="summary-card">
+                        <h3>Portfolio Value</h3>
+                        <div class="portfolio-value">
+                            <span class="value" id="portfolioValue">$0.00</span>
+                            <span class="change" id="portfolioChange">+0.00%</span>
+                        </div>
+                    </div>
+                    
+                    <div class="portfolio-chart">
+                        <canvas id="portfolioChart" width="300" height="150"></canvas>
+                    </div>
+                </div>
+                
+                <div class="holdings-section">
+                    <h3>Your Holdings</h3>
+                    <div class="holdings-list" id="holdingsList">
+                        <!-- Holdings loaded dynamically -->
+                    </div>
+                </div>
+                
+                <div class="transaction-history">
+                    <h3>Transaction History</h3>
+                    <div class="transactions-list" id="transactionsList">
+                        <!-- Transactions loaded dynamically -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Loading Overlay -->
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="loading-spinner">
+            <i class="fas fa-anchor fa-spin"></i>
+            <p>Processing Transaction...</p>
+        </div>
+    </div>
+
+    <!-- Toast Notifications -->
+    <div class="toast-container" id="toastContainer">
+        <!-- Toast notifications appear here -->
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,49 @@
+{
+  "name": "Port Token DEX",
+  "image": "mcr.microsoft.com/devcontainers/javascript-node:18",
+  
+  "features": {
+    "ghcr.io/devcontainers/features/docker-in-docker:2": {},
+    "ghcr.io/devcontainers/features/github-cli:1": {}
+  },
+  
+  "postCreateCommand": "npm install -g pnpm && echo 'Installing dependencies...' && cd contracts && pnpm install && cd ../frontend && pnpm install && cd ../oracle && pnpm install && echo 'Setup complete!'",
+  
+  "forwardPorts": [3000, 3001, 8545],
+  
+  "portsAttributes": {
+    "3000": {
+      "label": "Frontend (Next.js)",
+      "onAutoForward": "notify"
+    },
+    "3001": {
+      "label": "Oracle Backend",
+      "onAutoForward": "notify"
+    },
+    "8545": {
+      "label": "Hardhat Local Network",
+      "onAutoForward": "notify"
+    }
+  },
+  
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "ms-vscode.vscode-typescript-next",
+        "bradlc.vscode-tailwindcss",
+        "esbenp.prettier-vscode",
+        "ms-vscode.vscode-json",
+        "JuanBlanco.solidity",
+        "ms-vscode.hexeditor"
+      ],
+      "settings": {
+        "editor.formatOnSave": true,
+        "editor.codeActionsOnSave": {
+          "source.fixAll": "explicit"
+        }
+      }
+    }
+  },
+  
+  "remoteUser": "node"
+}

@@ -1,0 +1,26 @@
+{
+  "name": "port-dex-contracts",
+  "version": "1.0.0",
+  "description": "Smart contracts for the Port Token DEX",
+  "scripts": {
+    "compile": "hardhat compile",
+    "deploy:sepolia": "hardhat run scripts/deploy.ts --network sepolia",
+    "deploy-amoy": "hardhat run scripts/deploy-amoy.ts --network amoy",
+    "test": "hardhat test"
+  },
+  "dependencies": {
+    "@openzeppelin/contracts": "^5.0.0",
+    "hardhat": "^2.19.0"
+  },
+  "devDependencies": {
+    "@nomicfoundation/hardhat-ethers": "^3.0.0",
+    "@nomicfoundation/hardhat-toolbox": "^4.0.0",
+    "@types/chai": "^4.3.0",
+    "@types/mocha": "^10.0.0",
+    "@types/node": "^18.0.0",
+    "chai": "^4.3.0",
+    "ethers": "^6.8.0",
+    "ts-node": "^10.9.0",
+    "typescript": "^5.0.0"
+  }
+}
